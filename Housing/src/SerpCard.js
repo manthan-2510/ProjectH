@@ -1,23 +1,12 @@
 import React, {Component} from 'react';
-import { Image, View, Dimensions, StyleSheet, Text, TouchableOpacity } from 'react-native'
-import Carousel from 'react-native-snap-carousel'
-import R from 'ramda'
+import { View, StyleSheet, Text, TouchableOpacity } from 'react-native'
+//import R from 'ramda'
+import MyCarousel from './MyCarousel'
 import PropTypes from 'prop-types'
 
-export default class SerpCard extends Component{
+export default class SerpCard extends React.PureComponent{
     constructor(props){
         super(props)
-    }
-
-    renderitem = ({item}) => {
-        const imgUrl = R.replace('version','medium',item.absolute_url)
-        return(
-            <Image
-                source={{ uri: imgUrl }}
-                resizeMode='cover'
-                style={styles.propImg}
-            />
-        )
     }
 
     renderPrice = (minPrice,maxPrice) => {
@@ -46,33 +35,29 @@ export default class SerpCard extends Component{
             return null
         }
     }
+    
+    onPress = () => this.props.navigation.navigate('Detail',{scrollIndex: this.props.index})
 
     render(){
         const {minPrice, maxPrice, title, sqftRate, showSqftRate,
-             id, projectName, developer, locality} = this.props
+            projectName, developer, locality} = this.props
         return(
-            <TouchableOpacity style={{margin: 5}}>
-                <Carousel //ref={c => this._slider1Ref = c}
-                //style={{alignContent: 'center', justifyContent:"center"}}
-                data={this.props.images}
-                renderItem={this.renderitem}
-                inactiveSlideScale={0.9}
-                inactiveSlideOpacity={0.2}
-                sliderWidth={Dimensions.get('window').width}
-                itemWidth={350}
-                layout={'stack'} layoutCardOffset={10}
-                />
-                <View style={{marginLeft: 10}}>
-                    {this.renderPrice(minPrice,maxPrice)}
-                    <Text style={styles.projectText}>{projectName}</Text>
-                    <Text style={styles.developerText}>by {developer}</Text>
-                    <Text style={styles.localityText}>{locality}</Text>
-                    <View style={{flexDirection: 'row', marginTop: 3}}>
-                        <Text style={{fontSize: 10}}>{title}  </Text>
-                        {this.renderShowSqftRate(showSqftRate,sqftRate)}
+            <View>
+                <MyCarousel images={this.props.images} onPress={this.onPress}/>
+                <TouchableOpacity style={{margin: 5}}
+                onPress={this.onPress}>
+                    <View style={{marginLeft: 10}}>
+                        {this.renderPrice(minPrice,maxPrice)}
+                        <Text style={styles.projectText}>{projectName}</Text>
+                        <Text style={styles.developerText}>by {developer}</Text>
+                        <Text style={styles.localityText}>{locality}</Text>
+                        <View style={{flexDirection: 'row', marginTop: 3}}>
+                            <Text style={{fontSize: 10}}>{title}  </Text>
+                            {this.renderShowSqftRate(showSqftRate,sqftRate)}
+                        </View>
                     </View>
-                </View>
-            </TouchableOpacity>
+                </TouchableOpacity>
+            </View>
         )
     }
 }
@@ -91,13 +76,6 @@ SerpCard.propTypes = {
 }
 
 const styles=StyleSheet.create({ 
-    propImg: {
-        height: 200,
-        width: 350,
-        borderRadius: 15,
-        marginTop: 10,
-        alignSelf: 'flex-start'
-    },
     price: {
         marginTop: 5,
         fontSize: 17,

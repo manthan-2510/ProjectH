@@ -8,7 +8,6 @@
 
 import React, {Component} from 'react';
 import {StyleSheet, ActivityIndicator, FlatList, View, Dimensions} from 'react-native';
-//import InfiniteScrollView from 'react-native-infinite-scroll-view';
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import R from 'ramda'
@@ -61,11 +60,16 @@ class Root extends Component {
     return cardProps
   }
 
-	renderItem = ({item}) => {
+	renderItem = (obj) => {
+    const {item} = obj
     cardProps = this.processCardDetails(item)
+    let images=[]
+    item.gallery_images.forEach((image) => {
+      images.push(image.absolute_url)
+    })
     return(
       <View style={{flexDirection: 'row'}}>
-        <SerpCard images={item.gallery_images} {...cardProps}/>
+        <SerpCard images={images} {...cardProps} index={obj.index} navigation={this.props.navigation}/>
       </View>
     )
   }
@@ -79,7 +83,7 @@ class Root extends Component {
   render() {
     if(this.props.list && this.props.list.length){
     return (
-      <View style={{ flex:1, marginTop: 20, alignContent: 'center', justifyContent: 'center'}}>
+      <View style={{marginTop: 20, alignContent: 'center', justifyContent: 'center'}}>
         <FlatList
         //style={{flex: 1}}
         contentContainerStyle = {{justifyContent: 'center', alignItems: 'center'}}
