@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React from 'react';
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native'
 //import R from 'ramda'
 import MyCarousel from './MyCarousel'
@@ -36,7 +36,7 @@ export default class SerpCard extends React.PureComponent{
         }
     }
     
-    onPress = () => this.props.navigation.navigate('Detail',{scrollIndex: this.props.index})
+    onPress = () => this.props.navigation.navigate('Detail',{id: this.props.id, scrollIndex: this.props.index})
 
     render(){
         const {minPrice, maxPrice, title, sqftRate, showSqftRate,

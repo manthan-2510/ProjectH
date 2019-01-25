@@ -80,6 +80,12 @@ class Root extends Component {
     />
   )
 
+  renderFooter = () => (
+    <View>
+          <ActivityIndicator size="small" color="#BBBBBB" />
+        </View>
+  )
+  
   render() {
     if(this.props.list && this.props.list.length){
     return (
@@ -91,7 +97,7 @@ class Root extends Component {
         renderItem={this.renderItem}
         ItemSeparatorComponent={this.renderSeparator}
         // ListHeaderComponent={this.renderHeader}
-        // ListFooterComponent={this.renderFooter}
+        ListFooterComponent={this.renderFooter}
         keyExtractor={(item,index) => R.toString(item.id)}
         onEndReached={this.handleLoadMore}
         onEndThreshold={0}
@@ -114,7 +120,7 @@ Root.propTypes = {
 	dispatch: PropTypes.func.isRequired
 }
 
-mapStatetoProps = (state) => 
-  ({list: state.list, isLastPage: state.isLastPage, page: state.page})
+mapStatetoProps = ({serp}) => 
+  ({list: serp.list, isLastPage: serp.isLastPage, page: serp.page})
 export default connect(mapStatetoProps)(Root)
 
