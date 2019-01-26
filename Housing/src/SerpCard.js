@@ -36,7 +36,7 @@ export default class SerpCard extends React.PureComponent{
         }
     }
     
-    onPress = () => this.props.navigation.navigate('Detail',{id: this.props.id, scrollIndex: this.props.index})
+    onPress = () => this.props.navigation.navigate('Detail',{id: this.props.id, serpIndex: this.props.index, handleLoadMore: this.props.handleLoadMore})
 
     render(){
         const {minPrice, maxPrice, title, sqftRate, showSqftRate,

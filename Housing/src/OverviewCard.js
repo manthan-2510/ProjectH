@@ -7,22 +7,24 @@ class OverviewCard extends Component{
         super(props)
     }
 
-    renderRow = (title, text, unit=null) => (
-        <View style={{ flexDirection: 'row', justifyContent:'space-between'}}>
-                <Text style={styles.titleText}> {title} </Text>
-                <Text style={styles.dataText}> {text} {unit}</Text>
-        </View>
-    )
     render(){
         const { index, info } = this.props
         if(info[index]){
             const { bhk, avgSqftPrice, projectSize,possessDate } = info[index]
             return(
-                <View style={{alignContent:'stretch', marginTop: 10}}>
-                    {this.renderRow('Configurations',bhk)}
-                    {this.renderRow('Average Price',avgSqftPrice,' / sqft')}
-                    {this.renderRow('Project Size',projectSize,' units')}
-                    {this.renderRow('Possession',possessDate)}
+                <View style={{alignContent:'stretch', flexDirection:'row', marginTop: 10}}>
+                    <View style={{marginLeft: 20}}>
+                        <Text style={styles.titleText}>Configurations</Text>
+                        <Text style={styles.titleText}>Average Price</Text>
+                        <Text style={styles.titleText}>Project Size</Text>
+                        <Text style={styles.titleText}>Possession</Text>
+                    </View>
+                    <View style={{marginLeft: 50}}>
+                        <Text style={styles.dataText}>{bhk}</Text>
+                        <Text style={styles.dataText}>{avgSqftPrice} / sqft</Text>
+                        <Text style={styles.dataText}>{projectSize} units</Text>
+                        <Text style={styles.dataText}>{possessDate}</Text>
+                    </View>
                 </View>
             )
         }
@@ -35,22 +37,16 @@ mapStateToProps = ({details}) => ({
 export default connect(mapStateToProps)(OverviewCard)
 
 const styles=StyleSheet.create({ 
-    price: {
-        marginTop: 5,
-        fontSize: 20,
-    },
     titleText: {
         fontSize: 14,
         marginTop: 3,
-        marginLeft: 10,
         alignItems: 'flex-start',
-        color: '#AAAAAA'
+        color: '#BBBBBB'
 
     },
     dataText: {
         fontSize: 14,
         alignItems: 'flex-start',
-        marginTop: 3,
-        marginRight: 10
+        marginTop: 3
     },
 })

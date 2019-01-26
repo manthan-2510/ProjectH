@@ -39,7 +39,6 @@ class Root extends Component {
     const { page } = this.props
 		if(!this.props.isLastPage && !this.state.isLoading && page>this.state.page){
       this.setState( () => ({isLoading: true, page: page}), () => this.fetchRequest(page))
-			
 		}
 	}
 
@@ -69,7 +68,8 @@ class Root extends Component {
     })
     return(
       <View style={{flexDirection: 'row'}}>
-        <SerpCard images={images} {...cardProps} index={obj.index} navigation={this.props.navigation}/>
+        <SerpCard images={images} {...cardProps} index={obj.index} 
+        navigation={this.props.navigation} handleLoadMore={this.handleLoadMore}/>
       </View>
     )
   }
@@ -85,7 +85,7 @@ class Root extends Component {
           <ActivityIndicator size="small" color="#BBBBBB" />
         </View>
   )
-  
+
   render() {
     if(this.props.list && this.props.list.length){
     return (

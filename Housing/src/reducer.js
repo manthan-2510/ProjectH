@@ -5,6 +5,7 @@ const initialState = {
     list: [],
     ids:[],
     isLastPage: false,
+    lastIndex: 0,
     page: 1
 }
 
@@ -30,7 +31,8 @@ function listReducer(state=initialState,action){
                 list: R.concat(state.list,action.payload.hits),
                 ids: R.concat(state.ids,idList),
                 isLastPage: action.payload.isLastPage,
-                page: state.page+1
+                page: state.page+1,
+                lastIndex: state.lastIndex+action.payload.hits.length - 1
             })
         default:
             return state
