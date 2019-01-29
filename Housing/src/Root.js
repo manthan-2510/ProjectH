@@ -1,5 +1,5 @@
 import React,{ Component } from 'react'
-import { Animated, View, Dimensions, ScrollView } from 'react-native'
+import { Animated, View, Dimensions } from 'react-native'
 import HomeScreen from './HomeScreen'
 import DetailScreen from './Details'
 import { connect } from 'react-redux'
@@ -47,7 +47,6 @@ class Root extends Component{
   }
   
   onPress = (id, index, itemRef) => {
-    //console.log(id)
     itemRef.measure((sourceX, sourceY, width, height, pageX, pageY) => {
     this.pos=pageY
     this.setState((prevState)=>({
@@ -60,12 +59,10 @@ class Root extends Component{
         Animated.timing(this.state.serpOpacity,{
           toValue: 0,
           duration: duration,
-          //useNativeDriver: true
         }),
         Animated.timing(this.state.galleryTop,{
           toValue: 0,
           duration: duration,
-          //useNativeDriver: true
         }),
         Animated.timing(this.state.viewTop,{
           toValue: 0,
@@ -84,7 +81,6 @@ class Root extends Component{
       Animated.timing(this.state.serpTop,{
         toValue: HEIGHT,
         duration: 1,
-        //useNativeDriver: true
       })
     ).start() )
   })

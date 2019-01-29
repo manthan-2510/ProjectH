@@ -46,7 +46,6 @@ function extractImages(data){
 }
 
 function extractPriceCard(data){
-    let developername
     if(data.developer_information && data.developer_information.length){
         let {name} = data.developer_information[0]
         developerName = name

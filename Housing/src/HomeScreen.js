@@ -1,13 +1,5 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
-
 import React, {Component} from 'react';
-import {StyleSheet, ActivityIndicator, FlatList, View, Dimensions} from 'react-native';
+import { ActivityIndicator, FlatList, View, Dimensions} from 'react-native';
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import R from 'ramda'
@@ -91,4 +83,3 @@ Home.propTypes = {
 mapStatetoProps = ({serp}) => 
   ({list: serp.list, isLastPage: serp.isLastPage, page: serp.page})
 export default connect(mapStatetoProps)(Home)
-

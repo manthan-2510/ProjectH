@@ -1,13 +1,11 @@
 import React, {Component} from 'react';
-import { View, Dimensions, Text, Animated, TouchableOpacity,ScrollView } from 'react-native'
-import R from 'ramda'
+import { View, Dimensions, Text, Animated, TouchableOpacity } from 'react-native'
 import ConfigCard from './ConfigCard'
 import PriceCard from './PriceCard'
 import Gallery from './Gallery'
 import OverviewCard from './OverviewCard'
-import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
+import GestureRecognizer from 'react-native-swipe-gestures';
 import Amenities from './Amenities';
 
 const WIDTH = Dimensions.get('window').width
@@ -108,35 +106,33 @@ class Details extends Component{
         if(idMap.has(id)){
             index=idMap.get(id)
             return(
-                <Animated.ScrollView style={{ position: 'absolute', top: this.props.viewTop, flex: 1, height: HEIGHT-120}}
+                <Animated.ScrollView style={{ position: 'absolute', top: this.props.viewTop, flex: 1, height: HEIGHT-100}}
                 opacity={this.props.opacity}>
-                        <Animated.View style={{top: this.props.galleryTop, flexDirection: 'row'}}>
-                            <Gallery index={index} navigation={this.props.navigation}/>
-                            <TouchableOpacity onPress={this.props.onClose} style={{top: 10, left: 10, backgroundColor:'transparent', position: "absolute"}}>
+                    <Animated.View style={{top: this.props.galleryTop, flexDirection: 'row'}}>
+                        <Gallery index={index} navigation={this.props.navigation}/>
+                        <TouchableOpacity onPress={this.props.onClose} style={{top: 10, left: 10, backgroundColor:'transparent', position: "absolute"}}>
                             <Text style={{fontSize:30, color: '#5A5A5A'}}>x</Text>
                         </TouchableOpacity>
-                        </Animated.View>
-                        <Animated.View style={{top: this.props.textTop}}>
-                                <GestureRecognizer
-                                onSwipeLeft={(state) => this.onSwipeLeft(state)}
-                                onSwipeRight={(state) => this.onSwipeRight(state)}
-                                config={config}>
-                                    {this.ItemSeparator()}
-                                    <PriceCard index={index}/>
-                                    {this.ItemSeparator()}
-                                    <OverviewCard index={index}/>
-                                    {this.ItemSeparator()}
-                                    <ConfigCard index={index}/>
-                                    <Amenities index={index}/>
-                                </GestureRecognizer>
-                        </Animated.View>
+                    </Animated.View>
+                    <Animated.View style={{top: this.props.textTop}}>
+                        <GestureRecognizer
+                        onSwipeLeft={(state) => this.onSwipeLeft(state)}
+                        onSwipeRight={(state) => this.onSwipeRight(state)}
+                        config={config}>
+                            {this.ItemSeparator()}
+                            <PriceCard index={index}/>
+                            {this.ItemSeparator()}
+                            <OverviewCard index={index}/>
+                            {this.ItemSeparator()}
+                            <ConfigCard index={index}/>
+                            <Amenities index={index}/>
+                        </GestureRecognizer>
+                    </Animated.View>
                 </Animated.ScrollView>
             )
         }
         else{
-            return(
-                <View/>
-            )
+            return(<View/>)
         }
     }
 }

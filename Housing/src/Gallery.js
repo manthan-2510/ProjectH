@@ -11,8 +11,11 @@ export class InnerGallery extends Component{
     }
     renderItem = (obj) => {
         const {item} = obj
-        const imgUrl = R.replace('version','medium',item)
-        const maxNum = this.props.navigation.state.params.data.length
+        let imgUrl = ''
+        if(item){
+            imgUrl = R.replace('version','medium',item)
+        }
+        const {length: maxNum} = this.props.navigation.state.params.data
         return(
             <View style={{alignContent: 'center', justifyContent: 'center'}}>
                 <Text style={{textAlign: 'center', color: 'white'}}>
@@ -51,10 +54,14 @@ class Gallery extends Component{
 
     renderItem = (obj) => {
         const {item} = obj
-        const imgUrl = R.replace('version','medium',item)
+        let imgUrl = ''
+        if(item){
+            imgUrl = R.replace('version','medium',item)
+        }
         return(
             <TouchableOpacity style={{margin: 5}}
-            onPress={() => this.props.navigation.navigate('InnerScreen',{data: this.data, index:obj.index})}>
+            onPress={() => this.props.navigation.navigate('InnerScreen',
+                    {data: this.data, index:obj.index})}>
                 <Image
                     source={{ uri: imgUrl }}
                     resizeMode='cover'

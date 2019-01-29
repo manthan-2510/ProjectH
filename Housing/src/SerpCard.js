@@ -101,7 +101,6 @@ const styles=StyleSheet.create({
     price: {
         marginTop: 5,
         fontSize: 17,
-        //fontWeight: 'bold',
     },
     projectText: {
         fontSize: 15,

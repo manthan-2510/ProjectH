@@ -1,16 +1,7 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
-
 import React, {Component} from 'react';
 import { Provider } from 'react-redux'
 import Root from './Root'
-import Details from './Details'
-import Gallery, {InnerGallery} from './Gallery'
+import {InnerGallery} from './Gallery'
 import store from './reducer'
 import { StackNavigator } from 'react-navigation'
 

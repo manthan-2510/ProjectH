@@ -1,9 +1,9 @@
 import React, {Component} from 'react'
-import { View, Text, Modal, Image, FlatList } from 'react-native'
+import { View, Text, Modal, Image, StyleSheet, TouchableOpacity } from 'react-native'
 import R from 'ramda'
+import Grid from './Grid'
+import maptoIcon from './IconMap'
 import { connect } from 'react-redux'
-
-const sampleIcon = require('../assets/icons/icon-bed.png')
 
 class Amenities extends Component{
     constructor(props){
@@ -21,13 +21,7 @@ class Amenities extends Component{
             visible: !prevState.visible
         }))
     }
-    renderItem = ({item}) => (
-        <View>
-            <Image source={sampleIcon} resizeMode='contain'
-            style={{height: 30, width: 30}} />
-            <Text style={{fontSize: 9, textAlign: 'center', justifyContent:'center', width: 40}}>{item}</Text>
-        </View>
-    )
+    
     render(){
         const {index, amenitiesList} = this.props
         if(amenitiesList[index]){
@@ -35,21 +29,48 @@ class Amenities extends Component{
             const projAmenity = this.filterList(projectAmenities)
             const flatAmenity = this.filterList(flatAmenities)
             const projAmenityList = Object.keys(projAmenity)
-            const flatAmenityList = Object.keys(flatAmenity)
+            let flatAmenityList = Object.keys(flatAmenity)
+            flatAmenityList = flatAmenityList.map( amenity => 
+                R.replace('_',' ',R.replace('has_','',amenity))
+            )
             const total = projAmenityList.length+flatAmenityList.length
-            let flatListData = []
-            if(total>4){
-                flatListData = R.slice(0,3,R.concat(projAmenityList,flatAmenityList))
+            const projectIcons = maptoIcon(projAmenityList)
+            const flatIcons = maptoIcon(flatAmenityList)
+            const icons = R.concat(projectIcons,flatIcons)
+            let sample = []
+            if(total>3){
+                sample = R.slice(0,3,R.concat(projAmenityList,flatAmenityList))
             }
             else{
-                flatListData = R.concat(projAmenityList,flatAmenityList)
+                sample = R.concat(projAmenityList,flatAmenityList)
             }
+            sample = sample.map( (amenity,index) => {
+                return(
+                    <View style={{ flexDirection: 'column', flex: 1 }}>
+                        <Image source={icons[index]} resizeMode='contain'
+                        style={styles.imageThumbnail} />
+                        <Text style={{fontSize: 7, textAlign:'center', flexGrow:1, width: 50}}>{amenity}</Text>
+                    </View>
+                )
+            })
             return(
-                <View style={{backgroundColor: 'white', height: 60}}>
-                    <FlatList data={flatListData}
-                    keyExtractor={(item,index) => R.toString(index)}
-                    horizontal contentContainerStyle={{alignContent:'center', justifyContent:'space-evenly'}}
-                    scrollEnabled={false} renderItem={this.renderItem}/>
+                <View style={{backgroundColor: 'white', flexDirection: 'row', borderRadius: 15}}>
+                    { sample }
+                    {   (total>3) ? 
+                        (<View style={{justifyContent: 'center', alignContent:'center'}}>
+                            <TouchableOpacity onPress={this.onPress}
+                            style={styles.moreButton}>
+                                <Text style={{color: 'blue'}}>+{total-3}</Text>
+                                <Text style={{color:'blue', textAlign: 'left'}}>Amenities</Text>
+                            </TouchableOpacity>
+                        </View>): <View/>
+                    }
+                    <Modal animationType='slide'
+                    visible={this.state.visible} transparent={false}>
+                        <Grid data={{flatAmenity: flatAmenityList, projAmenity: projAmenityList,
+                            projIcons: projectIcons, flatIcons: flatIcons}}
+                         onClose = {this.onPress}/>
+                    </Modal>
                 </View>
             )
 
@@ -62,3 +83,18 @@ mapStateToProps = ({details}) => ({
     amenitiesList: details.amenities
 })
 export default connect(mapStateToProps)(Amenities)
+
+const styles = StyleSheet.create({
+    imageThumbnail: {
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: 50,
+      width: 50
+    },
+    moreButton: {
+        height: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: 70
+    }
+  });
