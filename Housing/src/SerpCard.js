@@ -1,7 +1,6 @@
 import React from 'react';
-import { View, StyleSheet, Text, TouchableOpacity } from 'react-native'
-//import R from 'ramda'
-import MyCarousel from './MyCarousel'
+import { View, StyleSheet, Text, TouchableOpacity, FlatList, Image } from 'react-native'
+import R from 'ramda'
 import PropTypes from 'prop-types'
 
 export default class SerpCard extends React.PureComponent{
@@ -35,17 +34,33 @@ export default class SerpCard extends React.PureComponent{
             return null
         }
     }
-    
-    onPress = () => this.props.navigation.navigate('Detail',{id: this.props.id, serpIndex: this.props.index, handleLoadMore: this.props.handleLoadMore})
+    renderImages = ({item}) => {
+        const imgUrl = R.replace('version','medium',item)
+        const { id, index } = this.props
+        return(
+            <TouchableOpacity style={{margin: 5}}
+            onPress={() => this.props.onPress(id,index,this.card)}>
+                <Image
+                    source={{ uri: imgUrl }}
+                    resizeMode='cover'
+                    style={styles.propertyImg}
+                />
+            </TouchableOpacity>
+        )
+    }
 
     render(){
         const {minPrice, maxPrice, title, sqftRate, showSqftRate,
-            projectName, developer, locality} = this.props
+            projectName, developer, locality, id, index} = this.props
         return(
-            <View>
-                <MyCarousel images={this.props.images} onPress={this.onPress}/>
+            <View ref = { card => this.card = card}>
+                <FlatList data={this.props.images}
+                style={{marginLeft: 10}}
+                renderItem={this.renderImages}
+                showsHorizontalScrollIndicator={false}
+                horizontal keyExtractor={(item,index)=>R.toString(index)}/>
                 <TouchableOpacity style={{margin: 5}}
-                onPress={this.onPress}>
+                onPress={() => this.props.onPress(id, index, this.card)}>
                     <View style={{marginLeft: 10}}>
                         {this.renderPrice(minPrice,maxPrice)}
                         <Text style={styles.projectText}>{projectName}</Text>
@@ -76,6 +91,13 @@ SerpCard.propTypes = {
 }
 
 const styles=StyleSheet.create({ 
+    propertyImg: {
+        height: 200,
+        width: 350,
+        borderRadius: 15,
+        marginTop: 10,
+        alignSelf: 'flex-start'
+    },
     price: {
         marginTop: 5,
         fontSize: 17,

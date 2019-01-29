@@ -14,7 +14,7 @@ const initialDetailState = {
     priceCard: [],
     infoCard: [],
     configCard: [],
-    ameneties: [],
+    amenities: [],
     developerInfo: [],
     idToIndex: new Map(),
     index: 0
@@ -75,9 +75,9 @@ function DetailsReducer(state=initialDetailState, action){
             currentDeveloperInfo = extractDeveloperInfo(data)
 
             currentConfigCard = {configs: data.inventory_configs}
-            const { ameneties_hash: projectAmeneties } = data.clubhouse
-            const { inventory_ameneties: flatAmeneties } = data
-            currentAmeneties = { projectAmeneties, flatAmeneties}
+            const { amenities_hash: projectAmenities } = data.clubhouse
+            const { inventory_amenities: flatAmenities } = data
+            currentAmenities = { projectAmenities, flatAmenities}
 
             const { id } = data
             currentMap = new Map(state.idToIndex)
@@ -87,7 +87,7 @@ function DetailsReducer(state=initialDetailState, action){
                 priceCard: state.priceCard.concat(currentPriceCard),
                 infoCard: state.infoCard.concat(currentInfoCard),
                 configCard: state.configCard.concat(currentConfigCard),
-                ameneties: state.ameneties.concat(currentAmeneties),
+                amenities: state.amenities.concat(currentAmenities),
                 developerInfo: state.developerInfo.concat(currentDeveloperInfo),
                 idToIndex: currentMap,
                 index: state.index+1

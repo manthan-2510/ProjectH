@@ -12,6 +12,7 @@
     "react": "16.6.3",
     "react-native": "0.57.8",
     "react-native-infinite-scroll-view": "^0.4.5",
+    "react-native-motion": "^0.2.0",
     "react-native-snap-carousel": "^3.7.5",
     "react-native-swipe-gestures": "^1.0.3",
     "react-native-viewpager": "^0.2.13",

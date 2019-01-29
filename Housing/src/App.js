@@ -10,6 +10,7 @@ import React, {Component} from 'react';
 import { Provider } from 'react-redux'
 import Root from './Root'
 import Details from './Details'
+import Gallery, {InnerGallery} from './Gallery'
 import store from './reducer'
 import { StackNavigator } from 'react-navigation'
 
@@ -17,8 +18,8 @@ const Navigator = StackNavigator({
   Home: {
     screen: Root
   },
-  Detail: {
-    screen: Details
+  InnerScreen: {
+    screen: InnerGallery
   }
 })
 
