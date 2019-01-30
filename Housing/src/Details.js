@@ -70,16 +70,14 @@ class Details extends Component{
 
     componentWillReceiveProps(nextProps){
         const { idMap } = this.props
-        if(nextProps.id!=this.props.id){
-            this.setState(()=>({
-                currentIndex: nextProps.index,
-                id: nextProps.id
-                }),()=>{
-                    if(!idMap.has(nextProps.id)){
-                        this.fetchData(nextProps.id)
-                    }
-            })
-        }
+        this.setState(()=>({
+            currentIndex: nextProps.index,
+            id: nextProps.id
+            }),()=>{
+                if(!idMap.has(nextProps.id)){
+                    this.fetchData(nextProps.id)
+                }
+        })
     }
 
     fetchData= (id) => {
