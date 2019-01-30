@@ -1,30 +1,33 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
-
-import React, {Component} from 'react';
-import {StyleSheet, ActivityIndicator, FlatList, View, Dimensions} from 'react-native';
-//import InfiniteScrollView from 'react-native-infinite-scroll-view';
+import React,{ Component } from 'react'
+import { Animated, View, Dimensions } from 'react-native'
+import HomeScreen from './HomeScreen'
+import DetailScreen from './Details'
 import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
-import R from 'ramda'
-import SerpCard from './SerpCard'
 
-const WIDTH = Dimensions.get('window').width
+const HEIGHT = Dimensions.get('window').height
+const duration = 800
 
-class Root extends Component {
-	constructor(props){
+class Root extends Component{
+  constructor(props){
     super(props)
     this.state={
+      serpTop: new Animated.Value(0),
+      galleryTop: new Animated.Value(HEIGHT),
+      textTop: new Animated.Value(HEIGHT),
+      viewTop: new Animated.Value(HEIGHT),
+      serpOpacity: new Animated.Value(1),
+      detailOpacity: new Animated.Value(0),
       isLoading: false,
-      page: 0
+      page: 0,
+      id: 0,
+      index: 0
     }
   }
   
+  componentDidMount(){
+		this.fetchRequest()
+	}
+
   fetchRequest = (page=1) => {
     const api = `https://search.housing.com/api/v4/buy/index/filter?show_aggregations=false&routeType=search&routing_range=10&isCollection=true&collection_name=Luxury&city_uuid=a0fd32816f73961748cf&poly=a0fd32816f73961748cf&radius=500&routing_range_type=time&collection_ids=1&source=android&sort_key=relevance&p=${page}&results_per_page=10`
     fetch(api)
@@ -40,77 +43,103 @@ class Root extends Component {
     const { page } = this.props
 		if(!this.props.isLastPage && !this.state.isLoading && page>this.state.page){
       this.setState( () => ({isLoading: true, page: page}), () => this.fetchRequest(page))
-			
 		}
-	}
-
-	componentDidMount(){
-		this.fetchRequest()
-	}
-
-	componentWillReceiveProps(nextProps){
-		//console.log(nextProps)
-	}
-
-  processCardDetails = (item) => {
-    const {formatted_min_price: minPrice, formatted_max_price: maxPrice, title, 
-      formatted_per_sqft_rate:sqftRate, show_per_sqft_rate: showSqftRate, id, name: projectName} =item
-    const { name: developer } = item.developer_information[0]
-    const locality = R.join(', ',item.display_neighbourhood)
-    const cardProps = {minPrice, maxPrice, title, sqftRate, showSqftRate, id, projectName, developer, locality}
-    return cardProps
   }
+  
+  onPress = (id, index, itemRef) => {
+    itemRef.measure((sourceX, sourceY, width, height, pageX, pageY) => {
+    this.pos=pageY
+    this.setState((prevState)=>({
+      serpTop: prevState.serpTop,
+      galleryTop: new Animated.Value(pageY),
+      id: id,
+      index: index
+    }), () => Animated.sequence([
+      Animated.parallel([
+        Animated.timing(this.state.serpOpacity,{
+          toValue: 0,
+          duration: duration,
+        }),
+        Animated.timing(this.state.galleryTop,{
+          toValue: 0,
+          duration: duration,
+        }),
+        Animated.timing(this.state.viewTop,{
+          toValue: 0,
+          duration: 1
+        }),
+        Animated.timing(this.state.detailOpacity,{
+          toValue: 1,
+          duration: duration
+        }),
+        Animated.timing(this.state.textTop,{
+          toValue: 0,
+          duration: duration
+        })
+      ])
+      ],
+      Animated.timing(this.state.serpTop,{
+        toValue: HEIGHT,
+        duration: 1,
+      })
+    ).start() )
+  })
+}
 
-	renderItem = ({item}) => {
-    cardProps = this.processCardDetails(item)
+onClose = () => {
+  Animated.sequence([
+    Animated.parallel([
+    Animated.timing(this.state.serpTop,{
+      toValue: 0,
+      duration: duration,
+    }),
+    Animated.timing(this.state.galleryTop,{
+      toValue: this.pos,
+      duration: duration,
+    }),
+    Animated.timing(this.state.detailOpacity,{
+      toValue: 0,
+      duration: duration
+    }),
+    Animated.timing(this.state.serpOpacity,{
+      toValue: 1,
+      duration: duration
+    }),
+    Animated.timing(this.state.textTop,{
+      toValue: HEIGHT,
+      duration: duration
+    })
+  ]),
+    Animated.timing(this.state.viewTop,{
+      toValue: HEIGHT,
+      duration: 1
+    }),
+    Animated.timing(this.state.galleryTop,{
+      toValue: HEIGHT,
+      duration: 1
+    })]
+).start()
+}
+  render(){
     return(
-      <View style={{flexDirection: 'row'}}>
-        <SerpCard images={item.gallery_images} {...cardProps}/>
+      <View>
+          <Animated.View style={{top: this.state.serpTop}}
+          opacity={this.state.serpOpacity}>
+            <HomeScreen onPress={this.onPress} 
+            handleLoadMore={this.handleLoadMore}/>
+          </Animated.View>
+          
+            <DetailScreen
+            navigation ={this.props.navigation} id={this.state.id} index={this.state.index} 
+            onClose={this.onClose} handleLoadMore={this.handleLoadMore}
+            galleryTop={this.state.galleryTop} viewTop={this.state.viewTop}
+            textTop={this.state.textTop} opacity={this.state.detailOpacity}
+            />
       </View>
     )
   }
-
-  renderSeparator = () => (
-    <View 
-    style={{margin: 10, height: 7, width: WIDTH, backgroundColor: '#BBBBBB'}}
-    />
-  )
-
-  render() {
-    if(this.props.list && this.props.list.length){
-    return (
-      <View style={{ flex:1, marginTop: 20, alignContent: 'center', justifyContent: 'center'}}>
-        <FlatList
-        //style={{flex: 1}}
-        contentContainerStyle = {{justifyContent: 'center', alignItems: 'center'}}
-        data={this.props.list}
-        renderItem={this.renderItem}
-        ItemSeparatorComponent={this.renderSeparator}
-        // ListHeaderComponent={this.renderHeader}
-        // ListFooterComponent={this.renderFooter}
-        keyExtractor={(item,index) => R.toString(item.id)}
-        onEndReached={this.handleLoadMore}
-        onEndThreshold={0}
-        />
-      </View>
-    );
-    }
-    else{
-      return(
-        <View>
-          <ActivityIndicator size="small" color="#BBBBBB" />
-        </View>
-      )
-    }
-  }
 }
 
-Root.propTypes = {
-	list: PropTypes.array.isRequired,
-	dispatch: PropTypes.func.isRequired
-}
-
-mapStatetoProps = (state) => 
-  ({list: state.list, isLastPage: state.isLastPage, page: state.page})
+mapStatetoProps = ({serp}) => 
+  ({isLastPage: serp.isLastPage, page: serp.page})
 export default connect(mapStatetoProps)(Root)
-
